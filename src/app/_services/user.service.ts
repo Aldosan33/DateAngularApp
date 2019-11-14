@@ -2,7 +2,9 @@ import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
 import { Observable } from 'rxjs';
 import { User } from '../_models/User';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { PaginatedResult } from '../_models/Pagination';
+import { map } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -11,8 +13,38 @@ export class UserService {
   baseUrl = environment.apiUrl;
 constructor(private http: HttpClient) { }
 
-  getUsers(): Observable<User[]> {
-    return this.http.get<User[]>(this.baseUrl + 'users');
+  getUsers(page?, itemsPerPage?, userParams?, likeParams?): Observable<PaginatedResult<User[]>> {
+    const paginatedResult: PaginatedResult<User[]> = new PaginatedResult<User[]>();
+    let params = new HttpParams();
+    if (page != null && itemsPerPage != null) {
+      params = params.append('pageNumber', page);
+      params = params.append('pageSize', itemsPerPage);
+    }
+
+    if (userParams != null) {
+      params = params.append('minAge', userParams.minAge);
+      params = params.append('maxAge', userParams.maxAge);
+      params = params.append('gender', userParams.gender);
+      params = params.append('orderBy', userParams.orderBy);
+    }
+
+    if (likeParams === 'Likers') {
+      params = params.append('likers', 'true');
+    }
+
+    if (likeParams === 'Likees') {
+      params = params.append('likees', 'true');
+    }
+
+    return this.http.get<User[]>(this.baseUrl + 'users', { observe: 'response', params }).pipe(
+          map(response => {
+              paginatedResult.result = response.body;
+              if (response.headers.get('Pagination') != null) {
+                paginatedResult.pagination = JSON.parse(response.headers.get('Pagination'));
+              }
+              return paginatedResult;
+          })
+    );
   }
 
   getUser(id: number): Observable<User> {
@@ -29,5 +61,10 @@ constructor(private http: HttpClient) { }
 
   deletePhoto(userId: number, id: number) {
     return this.http.delete(this.baseUrl + 'users/' + userId + '/photos/' + id);
+  }
+
+  sendLike(id: number, recipientId: number) {
+    console.log(this.baseUrl + 'users/' + id + '/likes/' + recipientId);
+    return this.http.post(this.baseUrl + 'users/' + id + '/likes/' + recipientId, {});
   }
 }
