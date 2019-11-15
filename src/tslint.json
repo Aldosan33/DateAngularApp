@@ -3,6 +3,7 @@
     "rules": {
         "no-string-literal": false,
         "object-literal-key-quotes": false,
+        "prefer-for-of": false,
         "directive-selector": [
             true,
             "attribute",
