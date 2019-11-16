@@ -79,8 +79,10 @@ export class CustomHammerConfig extends HammerGestureConfig {
       JwtModule.forRoot({
          config: {
             tokenGetter,
-            whitelistedDomains: ['localhost:5001'],
-            blacklistedRoutes: ['localhost:5001/api/auth']
+            whitelistedDomains: ['datingapi20191116122540.azurewebsites.net'],
+            blacklistedRoutes: ['datingapi20191116122540.azurewebsites.net/api/auth']
+            // whitelistedDomains: ['localhost:5001'],
+            // blacklistedRoutes: ['localhost:5001/api/auth']
          }
       })
    ],

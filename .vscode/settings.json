@@ -1,0 +1,4 @@
+{
+    "appService.defaultWebAppToDeploy": "/subscriptions/22657a5b-fdfe-4d11-ab85-ce9ce0fffbd7/resourceGroups/DatingAppRG/providers/Microsoft.Web/sites/DatingAngularApp",
+    "appService.deploySubpath": "publish\\DatingAngularApp"
+}
